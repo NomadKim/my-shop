@@ -1,22 +1,30 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
-import { Logger } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
-  const port = process.env.PORT || 3333;
-  await app.listen(port);
-  Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
+
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+    }),
   );
+
+  const configs = new DocumentBuilder()
+    .setTitle('A-la Beauty Shop')
+    .setDescription('WholesaleShop')
+    .addTag('a_la')
+    .setVersion('1.0')
+    .build();
+
+  const doc = SwaggerModule.createDocument(app, configs);
+  SwaggerModule.setup('api', app, doc);
+
+  await app.listen(3000);  
 }
 
 bootstrap();
