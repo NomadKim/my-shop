@@ -12,7 +12,7 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InitApp } from '../database/Init';
 import { CheckTheRole } from '../decorators/CheckTheRole';
 import { PublicDecor } from '../decorators/PublicDecor';
-import { AdminService } from './adminService';
+import { AdminService } from './AdminService';
 
 @Controller('admin')
 @ApiTags('admin page')
@@ -29,7 +29,8 @@ export class AdminController {
     });
   }
 
-  @CheckTheRole()
+  // @CheckTheRole()
+  @PublicDecor()
   @ApiResponse({ status: 201, description: 'Delete user with id' })
   @Delete('users/:id')
   async deleteUser(@Param('id', ParseIntPipe) id: number) {
@@ -39,8 +40,7 @@ export class AdminController {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
-    delete user.password;
-    return user;
+    return "User " + user.email +" is deleted";
   }
 
   @CheckTheRole()
@@ -52,6 +52,6 @@ export class AdminController {
   @Get('init')
   @PublicDecor()
   async initApp() {
-    return await this.init.initProducts();
+    return await this.init.initRoles();
   }
 }

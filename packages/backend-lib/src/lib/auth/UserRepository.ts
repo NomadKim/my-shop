@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { DatabaseClient } from "../database/database-client";
-import { UserDTO } from "./dtos";
+import { UserDTO } from "@my-shop/dtos";
 
 @Injectable()
 export class UserRepository {

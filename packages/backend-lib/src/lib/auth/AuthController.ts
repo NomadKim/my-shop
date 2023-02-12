@@ -1,6 +1,6 @@
 import { Body, Controller, HttpException, HttpStatus, Post, Res } from "@nestjs/common";
 import { AuthService } from "./AuthService";
-import { UserDTO } from "./dtos";
+import { UserDTO } from "@my-shop/dtos";
 import { Response } from "express";
 import { PublicDecor } from "../decorators/PublicDecor";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";

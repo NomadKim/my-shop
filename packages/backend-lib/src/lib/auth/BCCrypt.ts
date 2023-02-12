@@ -13,6 +13,7 @@ export class BCCrypt{
     }
 
     async compare(passwordFromDb: string, inputPassword: string): Promise<boolean>{
+        
         return bcrypt.compare(inputPassword, passwordFromDb);
     }
 
