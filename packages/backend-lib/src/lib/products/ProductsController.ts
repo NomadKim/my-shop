@@ -1,65 +1,93 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
-import { CheckTheRole } from "../decorators/CheckTheRole";
-import { ProductDTO } from "./dtos";
-import { ProductsService } from "./ProductsService";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Header,
+  HttpException,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { CheckTheRole } from '../decorators/CheckTheRole';
+import { PublicDecor } from '../decorators/PublicDecor';
+import { ProductDTO } from './dtos';
+import { ProductsService } from './ProductsService';
 
-@Controller("products")
-@ApiTags("Products Controller")
+@Controller('products')
+@ApiTags('Products Controller')
 export class ProductsController {
+  constructor(private productsService: ProductsService) {}
 
-    constructor(
-        private productsService: ProductsService
-    ) { }
+  @PublicDecor()
+  @Get()
+  @Header('Content-Type', 'application/json')
+  async getAllProducts() {
+    return await this.productsService.getAllProducts().catch(() => {
+      throw new HttpException(
+        'Somethig wrong, try again later',
+        HttpStatus.BAD_GATEWAY
+      );
+    });
+  }
 
-    @Get()
-    async getAllProducts() {
-        return await this.productsService.getAllProducts().catch(() => {
-            throw new HttpException("Somethig wrong, try again later", HttpStatus.BAD_GATEWAY);
-        });
+  @Get(':id')
+  async getProductById(@Param('id', ParseIntPipe) id: number) {
+    return await this.productsService.getProductById(id).catch(() => {
+      throw new HttpException(
+        'Somethig wrong, try again later',
+        HttpStatus.BAD_GATEWAY
+      );
+    });
+  }
+
+  @CheckTheRole()
+  @Post()
+  async createNewProduct(@Body() productDto: ProductDTO) {
+    const product = await this.productsService
+      .createNewProduct(productDto)
+      .catch(() => {
+        throw new HttpException(
+          'Something Wrong',
+          HttpStatus.SERVICE_UNAVAILABLE
+        );
+      });
+    if (!product) {
+      throw new HttpException('Try again', HttpStatus.SERVICE_UNAVAILABLE);
     }
+    return product;
+  }
 
-    @Get(":id")
-    async getProductById(@Param("id", ParseIntPipe) id: number) {
-        return await this.productsService.getProductById(id).catch(() => {
-            throw new HttpException("Somethig wrong, try again later", HttpStatus.BAD_GATEWAY);
-        });
+  @CheckTheRole()
+  @Delete(':id')
+  async deleteProductById(@Param('id', ParseIntPipe) id: number) {
+    const product = await this.productsService
+      .deleteProductById(id)
+      .catch(() => {
+        throw new HttpException('product not found', HttpStatus.BAD_REQUEST);
+      });
+    if (!product) {
+      throw new HttpException('product not found', HttpStatus.BAD_REQUEST);
     }
+    return product;
+  }
 
-    @CheckTheRole()
-    @Post()
-    async createNewProduct(@Body() productDto: ProductDTO) {
-        const product = await this.productsService.createNewProduct(productDto).catch(() => {
-            throw new HttpException("Something Wrong", HttpStatus.SERVICE_UNAVAILABLE);
-        });
-        if (!product) {
-            throw new HttpException("Try again", HttpStatus.SERVICE_UNAVAILABLE);
-        }
-        return product;
-
+  @CheckTheRole()
+  @Patch(':id')
+  async updateProduct(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() product: ProductDTO
+  ) {
+    const productDb = await this.productsService.updateProduct(id, product);
+    if (!productDb) {
+      throw new HttpException(
+        'No such product',
+        HttpStatus.SERVICE_UNAVAILABLE
+      );
     }
-
-    @CheckTheRole()
-    @Delete(":id")
-    async deleteProductById(@Param('id', ParseIntPipe) id: number) {
-        const product = await this.productsService.deleteProductById(id).catch(() => {
-            throw new HttpException("product not found", HttpStatus.BAD_REQUEST)
-        });
-        if (!product) {
-            throw new HttpException("product not found", HttpStatus.BAD_REQUEST);
-        }
-        return product;
-    }
-
-    @CheckTheRole()
-    @Patch(":id")
-    async updateProduct(@Param('id', ParseIntPipe) id: number, @Body() product: ProductDTO) {
-
-        const productDb = await this.productsService.updateProduct(id, product);
-        if (!productDb) {
-            throw new HttpException("No such product", HttpStatus.SERVICE_UNAVAILABLE);
-
-        }
-        return productDb;
-    }
+    return productDb;
+  }
 }

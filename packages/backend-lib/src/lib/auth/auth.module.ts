@@ -6,19 +6,9 @@ import { BCCrypt } from './BCCrypt';
 import { UserRepository } from './UserRepository';
 
 @Module({
-    controllers:[
-        AuthController
-    ],
-    providers: [
-        AuthService,
-        BCCrypt,
-        UserRepository
-    ],
-    imports:[
-        JwtModule
-    ],
-    exports:[
-        UserRepository
-    ]
+  controllers: [AuthController],
+  providers: [AuthService, BCCrypt, UserRepository],
+  imports: [JwtModule],
+  exports: [UserRepository, BCCrypt],
 })
 export class AuthModule {}

@@ -40,7 +40,7 @@ export class AdminController {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
-    return "User " + user.email +" is deleted";
+    return 'User ' + user.email + ' is deleted';
   }
 
   @CheckTheRole()
@@ -52,6 +52,6 @@ export class AdminController {
   @Get('init')
   @PublicDecor()
   async initApp() {
-    return await this.init.initRoles();
+    return await this.init.initProducts();
   }
 }
