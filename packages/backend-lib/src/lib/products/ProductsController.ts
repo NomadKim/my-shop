@@ -22,7 +22,6 @@ import { ProductsService } from './ProductsService';
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
-  @PublicDecor()
   @Get()
   @Header('Content-Type', 'application/json')
   async getAllProducts() {

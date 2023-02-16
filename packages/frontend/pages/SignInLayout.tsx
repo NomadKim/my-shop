@@ -37,26 +37,26 @@ export function SignInLayout(props) {
     );
 }
 
-async function signInClick (event) {
-    event.preventDefault();
-    fetch("/products", {
-        method: 'get',
-        // headers: {
-        //     'Content-Type': 'application/json',
-        //     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImsxbWZAZGtqa2suY29tIiwicGFzc3dvcmQiOiJzZmFzZGYiLCJpYXQiOjE2NzYyODczODgsImV4cCI6MTY3NzM2NzM4OH0.MzNM4EDgt8wYOHYtXTXG8WROxRwP15b9aI-kKyKzZCE"
-        //   },
-        mode: "no-cors",
-        // body: JSON.stringify({
-        //     email: "1mf@dkjkk.com",
-        //     password: "sfasdf",
-        // })  
-    }).then((res)=>{
-        console.log(res.body);
-        return res.json()})
-        .catch((err)=>{
-            console.log(err)
-        });
+function signInClick (event) {
+     event.preventDefault();
+    fetch(process.env.baseUrl + "/signin", {
+        method: "POST",
+         headers: {
+            "Accept": 'application/json',
+            'Content-Type': 'application/json',
+            // "Authorization" : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjFtZkBka2pray5jb20iLCJwYXNzd29yZCI6InNmYXNkZiIsImlhdCI6MTY3NjQ1Mzc2OSwiZXhwIjoxNjc3NTMzNzY5fQ.IKPUWZEAmtSxT0CLqYlmaH_0FfEMHtZpO8doNLIOqKc"
 
+          },
+        body: JSON.stringify({
+            email: "1mf@dkjkk.com",
+            password: "sfasdf",
+        })  
+    }).then((g)=>{
+        const gr = g.json();
+        console.log(g.headers.get('Authorization'));
+        return gr;
+    })
+    .then((daata)=>{console.log(daata)});
 }
   
 export default SignInLayout;

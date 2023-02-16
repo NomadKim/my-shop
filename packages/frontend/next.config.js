@@ -1,6 +1,7 @@
 //@ts-check
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const { Redirect } = require('@nestjs/common');
 const { withNx } = require('@nrwl/next/plugins/with-nx');
 
 /**
@@ -12,16 +13,9 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
+  env: {
+    baseUrl: "http://localhost:4000/backapi"
+  }
 };
 
 module.exports = withNx(nextConfig);
-module.exports = {
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: 'http://localhost:4000/backapi' // Proxy to Backend
-      }
-    ]
-  }
-}
