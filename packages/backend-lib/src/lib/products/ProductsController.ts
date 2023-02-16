@@ -10,8 +10,10 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Req,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { PassThrough } from 'stream';
 import { CheckTheRole } from '../decorators/CheckTheRole';
 import { PublicDecor } from '../decorators/PublicDecor';
 import { ProductDTO } from './dtos';
@@ -24,7 +26,8 @@ export class ProductsController {
 
   @Get()
   @Header('Content-Type', 'application/json')
-  async getAllProducts() {
+  async getAllProducts(@Req() req: Request) {
+    console.log(req.headers);
     return await this.productsService.getAllProducts().catch(() => {
       throw new HttpException(
         'Somethig wrong, try again later',
