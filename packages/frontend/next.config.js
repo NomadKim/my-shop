@@ -1,7 +1,6 @@
 //@ts-check
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { Redirect } = require('@nestjs/common');
 const { withNx } = require('@nrwl/next/plugins/with-nx');
 
 /**
